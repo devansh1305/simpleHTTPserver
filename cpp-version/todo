@@ -1,0 +1,12 @@
+Task 1:
+	implement dirent's d_type to check the file type
+	fine-tune the vecotrs to works with structs of name, date
+	implement the "toLookAtCode"
+	find a way to save the vectors for future use
+	
+Task 3:
+	Loadable modules
+
+Task 4:
+	Stats
+

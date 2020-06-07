@@ -1,0 +1,132 @@
+
+string parseMyClientData(string request){
+	//string pass="HTTP/1.1 200 Document follows\r\nServer: CS_252_lab5\r\nContent-type: text/html\r\n\r\n<meta charset=\"utf-8\"/><html><body><h1>Hello, World!</h1></body></html>";
+	string tempRequest=request;
+	string pass;
+	int getSecretPos=tempRequest.find("/dev1305/");
+	//printf("Pos: %d\n",getSecretPos);
+	if(string::npos!=getSecretPos){
+		int _httppos=tempRequest.find("HTTP");
+		string dir_path=tempRequest.substr(getSecretPos,_httppos-5);
+		cout << "htp pos: " << dir_path << endl;
+		
+		string Ctype;
+		if(dir_path.find(".html")!=string::npos){
+			Ctype="text/html";
+		}
+		else if(dir_path.find(".gif")!=string::npos){
+			Ctype="image/gif";
+		}
+		else if(dir_path.find(".png")!=string::npos){
+			Ctype="image/gif";
+		}
+		else{
+			Ctype="text/plain";
+		}
+		
+		pass="HTTP/1.1 200 Document follows\r\nServer: CS_252_lab5\r\nContent-type: "+Ctype+"\r\n\r\n<meta charset=\"utf-8\"/>";
+		char cwd[256];
+		getcwd(cwd,sizeof(cwd));
+		if(dir_path=="/dev1305/"){
+			string Cpath=cwd;
+			Cpath+="/http-root-dir/";
+			//cout<<"cwd: "<<Cpath<<endl;
+			ifstream ifs("http-root-dir/htdocs/index.html");
+			string content((std::istreambuf_iterator<char>(ifs)),
+					(std::istreambuf_iterator<char>()));
+			pass="HTTP/1.1 200 Document follows\r\nServer: CS_252_lab5\r\nContent-type: text/html\r\n\r\n<meta charset=\"utf-8\"/>";
+			pass+=content;
+			cout << endl<< "pass:"<<endl<<pass<<endl<<endl;
+		}else{
+			string Cpath=dir_path.substr(8,dir_path.size());
+			Cpath="http-root-dir/htdocs"+Cpath;
+			cout<<"part2: "<< Cpath <<endl;
+			string content;
+			FILE * input;
+			char get_char;
+			input=fopen(Cpath.c_str(),"r");
+			//cout<<"data: "<<endl;
+			int ret=0;
+			while(ret=read(fileno(input),&get_char,sizeof(get_char))){
+				content+=get_char;
+			}
+			fclose(input);
+			//pass="HTTP/1.1 200 Document follows\r\nServer: CS_252_lab5\r\nContent-type: text/html\r\n\r\n<meta charset=\"utf-8\"/>";
+			pass+=content;
+			cout << endl<< "pass:"<<endl<<pass<<endl<<endl;
+		}
+	}
+	else{
+		pass="HTTP/1.1 200 Document follows\r\nServer: CS_252_lab5\r\nContent-type: text/html\r\n\r\n<meta charset=\"utf-8\"/><html><body><h1>Wrong Password!</h1></body></html>";
+	}
+	return pass;
+}
+
+
+
+---------------------------------------------------------------------------------
+
+
+
+
+			string Cpath=dir_path.substr(8,dir_path.size());
+			Cpath="http-root-dir/htdocs"+Cpath;
+			cout<<"part2: "<< Cpath <<endl;
+			string content;
+			FILE * input;
+			char get_char;
+			input=fopen(Cpath.c_str(),"rb");
+			//cout<<"data: "<<endl;
+			int ret=0;
+			ifstream ifs(Cpath);
+			vector<char> data = std::vector<char>(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());
+			cout << "file tyoe: " << Ctype << endl;
+		//	std::for_each(data.begin(), data.end(), [](char c) { write(sock,&c,sizeof(c)) });
+			for(int i=0;i<data.size();i++){
+				write(sock,&data.at(i),sizeof(data.at(i)));
+			}
+			//cin.get();
+			//cout << "data: " << data2<<endl;
+
+			/*while(ret=read(fileno(input),&get_char,sizeof(get_char))){
+				cout << &get_char ;
+				if (write(sock, &get_char, sizeof(get_char)) != ret) {
+					cout<<"END!!"<<endl;
+					perror("write");
+					return;
+				}	
+			}
+			fclose(input);
+			*/
+			//pass="HTTP/1.0 200 Document follows\r\nServer: CS_252_lab5\r\nContent-type: text/html\r\n\r\n<meta charset=\"utf-8\"/>";
+			//pass+=data2;
+			
+			//write(sock,pass.c_str(),pass.size());
+			
+			//cout << endl<< "pass:"<<endl<<pass<<endl<<endl;
+		}
+	}
+
+----------------------------------------------------------------
+
+
+			//pass="HTTP/1.0 200 Document OK\r\nServer: CS_252_lab5\r\nContent-Type: text/html\r\n\r\n";
+			/*
+			write(sock,"HTTP/1.0 200 OK",strlen("HTTP/1.1 200 OK"));
+			write(sock,"\r\n",strlen("\r\n"));
+			write(sock,"Server: CS252 lab5",strlen("CS252 lab5"));
+			write(sock,"\r\n",strlen("\r\n"));
+			write(sock,"Content-Type: ",strlen("Content-Type: "));
+			write(sock,Ctype.c_str(),strlen(Ctype.c_str()));
+			write(sock,"\r\n\r\n",strlen("\r\n\r\n"));
+			write(sock,content.c_str(),strlen(content.c_str()));
+			*/
+			/*
+			write(sock,"HTTP/1.0 200 OK",strlen("HTTP/1.1 200 OK"));
+			write(sock,"\r\n",strlen("\r\n"));
+			write(sock,"Server: CS252 lab5",strlen("CS252 lab5"));
+			write(sock,"\r\n",strlen("\r\n"));
+			write(sock,"Content-Type: ",strlen("Content-Type: "));
+			write(sock,Ctype.c_str(),strlen(Ctype.c_str()));
+			write(sock,"\r\n\r\n",strlen("\r\n\r\n"));
+			*/
